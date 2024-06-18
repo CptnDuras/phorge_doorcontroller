@@ -9,6 +9,7 @@ import django
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
+# noinspection PyUnresolvedReferences
 from django.conf import settings
 
 import serial
@@ -94,10 +95,11 @@ def main_loop(ser):
         print(message)
 
 
-def run():
+def run(serial_device):
     django.setup()
+
     try:
-        ser = setup_serial_conn()  # "/dev/ttyUSB0")
+        ser = setup_serial_conn(serial_device)  # "/dev/ttyUSB0")
 
         while True:
             main_loop(ser)
@@ -106,11 +108,14 @@ def run():
             f"Got error while trying to run the serial communication {ex}\n{traceback.format_exc()}"
         )
         # wait for a second
-        time.sleep(1)
-
-        # Infinite money glitch
-        run()
+        time.sleep(.5)
 
 
 if __name__ == "__main__":
-    run()
+
+    current_serial = 0
+    serial_options = ["/dev/ttyACM0", "/dev/ttyACM1"]
+
+    while True:
+        run(serial_options[current_serial])
+        current_serial = (current_serial + 1) % len(serial_options)

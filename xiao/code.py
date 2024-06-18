@@ -1,4 +1,9 @@
 import read
+import microcontroller
 
-read.do_read()
+
+try:
+    read.do_read()
+except:
+    microcontroller.reset()
 
