@@ -4,7 +4,7 @@ from .models import Restriction, PhorgeMember, Card, CardSwipeLog
 
 @admin.register(Card)
 class CardAdmin(admin.ModelAdmin):
-    list_display = ["last_swiped", "enabled", "uid"]
+    list_display = ["last_swiped", "enabled", "pretty_uid"]
 
 
 @admin.register(CardSwipeLog)
