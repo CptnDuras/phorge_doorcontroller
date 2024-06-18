@@ -48,12 +48,16 @@ class Card(models.Model):
         # Eventually make this more complex - i.e. make sure anyone under 18 can access only during daylight hours
         return self.enabled
 
+    @property
+    def pretty_uid(self):
+        return  ":".join(format(byte, '02x') for byte in bytes(self.uid))
+
     def __str__(self):
         if self.member is not None:
             return (
-                f"{self.member.full_name}({self.uid}), last swiped: {self.last_swiped}"
+                f"{self.member.full_name}({self.pretty_uid}), last swiped: {self.last_swiped}"
             )
-        return f"({self.uid}), last swiped: {self.last_swiped}"
+        return f"({self.pretty_uid}), last swiped: {self.last_swiped}"
 
 
 class CardSwipeLog(models.Model):
