@@ -35,7 +35,7 @@ class PhorgeMember(models.Model):
 
 
 class Card(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid6.uuid7(), editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid6.uuid7, editable=False)
     uid = models.BinaryField(max_length=6)
     last_swiped = models.DateTimeField(null=True, blank=True)
     enabled = models.BooleanField(default=False)

@@ -11,9 +11,13 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 # noinspection PyUnresolvedReferences
 from django.conf import settings
+from django.utils import timezone
+
 
 import serial
 import logging
+import requests
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -23,6 +27,17 @@ formatter = logging.Formatter(
 )
 handler.setFormatter(formatter)
 logger.addHandler(handler)
+
+
+def log_card(card_uuid, access_granted):
+    url = "http://localhost:8700/api/card-swipe-logs/"
+    payload = {
+        "swiped_on": timezone.now(),
+        "unlock": access_granted,
+        "card": card_uuid,
+    }
+
+    requests.post(url, payload)
 
 
 def setup_serial_conn(port="/dev/ttyACM0"):
@@ -66,7 +81,12 @@ def main_loop(ser):
             if card is None:
                 # if the card doesn't exist in the DB, add it
                 logger.info(f"Got new card {valid_code}. Writing to DB")
-                card = Card.objects.create(uid=valid_code, last_swiped=swipe_time)
+                new_uuid = uuid6.uuid7()
+                card = Card.objects.create(
+                    id=new_uuid,
+                    uid=valid_code,
+                    last_swiped=swipe_time
+                )
 
             # check to see if access should be granted:
             access = card.can_access()
