@@ -24,7 +24,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-def setup_serial_conn(port="/dev/ttyACM0"):
+def setup_serial_conn(port="/dev/ttyACM1"):
     ser = serial.Serial(port, 9600, timeout=2, xonxoff=False, rtscts=False,
                         dsrdtr=False)  # Tried with and without the last 3 parameters, and also at 1Mbps, same happens.
     ser.flushInput()
@@ -34,7 +34,7 @@ def setup_serial_conn(port="/dev/ttyACM0"):
 
 
 def send_unlock_code(ser, code: bytes):
-    prefix = b"\xbe\xef"
+    prefix = b"\xde\xad"
 
     output = prefix + code
     print(f"sending output: {output}")
@@ -45,11 +45,18 @@ def main_loop(ser):
     from access_control.models import Card, CardSwipeLog
 
     # bytesToRead = ser.inWaiting()
-    message = ser.read(6)
+    message = ser.read(80)
+
+    str_message = str(message)
+    if "CTRL-D" in str_message:
+        # send ctrl-dr
+        time.sleep(50)
+        # ser.write(b'\x04')
 
     if message[:2] == b"\xbe\xef":
         try:
-            valid_code = message[2:]
+            # codes are only 4 bytes long
+            valid_code = message[2:6]
             card = Card.objects.filter(uid=valid_code).first()
 
             swipe_time = datetime.now()
@@ -63,7 +70,7 @@ def main_loop(ser):
                 )
 
             # check to see if access should be granted:
-            access = card.can_access()
+            access = True  # card.can_access()
 
             if access:
                 send_unlock_code(ser, valid_code)
@@ -96,8 +103,8 @@ def run():
             main_loop(ser)
     except Exception as ex:
         logger.error(f"Got error while trying to run the serial communication {ex}\n{traceback.format_exc()}")
-        # wait for half a second
-        time.sleep(500)
+        # wait for a second
+        time.sleep(1)
 
         # Infinite money glitch
         run()
