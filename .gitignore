@@ -1,0 +1,7 @@
+.idea/
+.env
+*.log
+*.sqlite3 
+*.swp
+*.pyc
+**/__pycache__/

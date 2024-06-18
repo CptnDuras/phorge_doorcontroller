@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "phorgedoorcontroller"
+version = "0.1.0"
+description = ""
+authors = ["Steve Butler <sbutler@innovativesol.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0.3"
+pyserial = "^3.5"
+uuid6 = "^2024.1.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
