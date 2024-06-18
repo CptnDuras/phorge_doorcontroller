@@ -68,7 +68,7 @@ def main_loop(ser):
                 card = Card.objects.create(uid=valid_code, last_swiped=swipe_time)
 
             # check to see if access should be granted:
-            access = True  # card.can_access()
+            access = card.can_access()
 
             if access:
                 send_unlock_code(ser, valid_code)
