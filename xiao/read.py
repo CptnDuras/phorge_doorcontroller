@@ -34,7 +34,7 @@ def unlock_door(relay_pin):
 
     # False pulls the pin down, and the normally open pin on relay to closed
     relay_pin.value = False
-    time.sleep(5)
+    time.sleep(2.5)
 
     print("locking door")
     # True pulls the pin back up, and opens the normally open pin on relay

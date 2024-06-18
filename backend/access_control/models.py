@@ -26,7 +26,7 @@ class PhorgeMember(models.Model):
 
     @property
     def is_current_member(self):
-        if timezone.now() <= self.member_until:
+        if timezone.today() <= self.member_until:
             return True
         return False
 
@@ -50,13 +50,11 @@ class Card(models.Model):
 
     @property
     def pretty_uid(self):
-        return  ":".join(format(byte, '02x') for byte in bytes(self.uid))
+        return ":".join(format(byte, "02x") for byte in bytes(self.uid))
 
     def __str__(self):
         if self.member is not None:
-            return (
-                f"{self.member.full_name}({self.pretty_uid}), last swiped: {self.last_swiped}"
-            )
+            return f"{self.member.full_name}({self.pretty_uid}), last swiped: {self.last_swiped}"
         return f"({self.pretty_uid}), last swiped: {self.last_swiped}"
 
 

@@ -39,7 +39,7 @@ def send_unlock_code(ser, code: bytes):
     prefix = b"\xde\xad"
 
     output = prefix + code
-    print(f"sending output: {output}")
+    logger.info(f"sending output: {output}")
     ser.write(output)
 
 
@@ -108,7 +108,7 @@ def run(serial_device):
             f"Got error while trying to run the serial communication {ex}\n{traceback.format_exc()}"
         )
         # wait for a second
-        time.sleep(.5)
+        time.sleep(0.5)
 
 
 if __name__ == "__main__":
