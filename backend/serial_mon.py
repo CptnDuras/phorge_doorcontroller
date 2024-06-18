@@ -25,8 +25,9 @@ logger.addHandler(handler)
 
 
 def setup_serial_conn(port="/dev/ttyACM0"):
-    ser = serial.Serial(port, 9600, timeout=2, xonxoff=False, rtscts=False,
-                        dsrdtr=False)  # Tried with and without the last 3 parameters, and also at 1Mbps, same happens.
+    ser = serial.Serial(
+        port, 9600, timeout=2, xonxoff=False, rtscts=False, dsrdtr=False
+    )  # Tried with and without the last 3 parameters, and also at 1Mbps, same happens.
     ser.flushInput()
     ser.flushOutput()
 
@@ -64,10 +65,7 @@ def main_loop(ser):
             if card is None:
                 # if the card doesn't exist in the DB, add it
                 logger.info(f"Got new card {valid_code}. Writing to DB")
-                card = Card.objects.create(
-                    uid=valid_code,
-                    last_swiped=swipe_time
-                )
+                card = Card.objects.create(uid=valid_code, last_swiped=swipe_time)
 
             # check to see if access should be granted:
             access = True  # card.can_access()
@@ -87,7 +85,9 @@ def main_loop(ser):
                     unlock=access,
                 )
             except Exception as ex:
-                logger.error(f"Exception on writing swipe date {ex}\n{traceback.format_exc()}")
+                logger.error(
+                    f"Exception on writing swipe date {ex}\n{traceback.format_exc()}"
+                )
         except Exception as ex:
             logger.error(f"Got {ex} while trying to read code from arduino ")
     else:
@@ -102,7 +102,9 @@ def run():
         while True:
             main_loop(ser)
     except Exception as ex:
-        logger.error(f"Got error while trying to run the serial communication {ex}\n{traceback.format_exc()}")
+        logger.error(
+            f"Got error while trying to run the serial communication {ex}\n{traceback.format_exc()}"
+        )
         # wait for a second
         time.sleep(1)
 
